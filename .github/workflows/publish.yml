@@ -22,7 +22,7 @@ jobs:
       - uses: docker/setup-buildx-action@v3
 
       - name: Build candidate image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           load: true
@@ -54,7 +54,7 @@ jobs:
             type=raw,value=latest
 
       - name: Push image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
