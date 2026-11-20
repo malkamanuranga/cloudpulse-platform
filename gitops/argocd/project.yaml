@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cloudpulse
+  namespace: argocd
+spec:
+  description: CloudPulse platform
+  sourceRepos:
+    - https://github.com/malkamanuranga/cloudpulse-platform.git
+  destinations:
+    - namespace: cloudpulse-*
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
