@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cloudpulse-api-slo
+spec:
+  groups:
+    - name: cloudpulse-api-slo
+      rules:
+        - record: cloudpulse:latency_good_ratio:rate5m
+          expr: |
+            sum(rate(http_request_duration_seconds_bucket{le="0.5"}[5m]))
+            /
+            sum(rate(http_request_duration_seconds_count[5m]))
+        - alert: CloudpulseLatencySLOBurn
+          expr: cloudpulse:latency_good_ratio:rate5m < 0.99
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Fewer than 99% of requests finish within 500ms
+            runbook: docs/runbooks/api-down.md
