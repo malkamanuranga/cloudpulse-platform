@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cloudpulse-api-alerts
+spec:
+  groups:
+    - name: cloudpulse-api
+      rules:
+        - alert: CloudpulseApiDown
+          expr: sum(up{job=~".*cloudpulse-api.*"}) == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: cloudpulse-api has no healthy targets
+            runbook: docs/runbooks/api-down.md
+        - alert: CloudpulseApiCrashLooping
+          expr: increase(kube_pod_container_status_restarts_total{container="api"}[15m]) > 3
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: cloudpulse-api containers are restarting repeatedly
+            runbook: docs/runbooks/api-down.md
